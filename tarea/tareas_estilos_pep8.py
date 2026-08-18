@@ -1,6 +1,5 @@
 """
 Módulo que implementa un Árbol Binario de Búsqueda (BST) para números enteros.
-Cumple con las guías de estilo PEP 8.
 """
 
 
