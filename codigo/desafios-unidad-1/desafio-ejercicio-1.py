@@ -1,10 +1,13 @@
-"""Unidad 1 - Tipos de Datos Abstractos (TDA) y Gestion de Memoria.
-
-Solucion de los desafios planteados en la unidad, respetando las
+"""
+Modulo para el Desafio 1: Tipos de Datos Abstractos (TDA) y Gestion de Memoria.
+Asignatura: Estructura de Datos 1 - UAGRM
+---------------------------------------------------------------------
+Solucion del desafio 1, respetando las
 recomendaciones de la guia de estilo PEP 8. Cada funcion muestra
 la solucion al problema indicado y explica brevemente el motivo
 del error y la forma utilizada para corregirlo.
 """
+
 
 from copy import copy
 
