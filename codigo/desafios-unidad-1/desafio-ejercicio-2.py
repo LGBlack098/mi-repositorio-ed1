@@ -1,5 +1,6 @@
 # ---------------------------------------------------------------------
-# Desafio 2: Implementacion de TDA Pila (Stack)
+# Modulo para el Desafio 2: Correccion del TDA Pila (Stack) y sus operaciones. 
+# Asignatura: Estructura de Datos 1 - UAGRM
 # ---------------------------------------------------------------------
 class Stack:
     """Representa una pila (LIFO) con sus operaciones principales."""
