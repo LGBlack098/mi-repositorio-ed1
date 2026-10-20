@@ -13,7 +13,7 @@ if (-not $stage.StartsWith(([IO.Path]::GetFullPath($stageParent)) + '\')) {
     throw 'El directorio de compilación móvil debe quedar en la caché de Sonoteca.'
 }
 New-Item -ItemType Directory -Path $stage -Force | Out-Null
-foreach ($file in @('main.py','demo.py','generar_demo.py','pyproject.toml')) {
+foreach ($file in @('main.py','pyproject.toml')) {
     Copy-Item -LiteralPath (Join-Path $projectRoot $file) -Destination $stage
 }
 # Limite el proyecto Flutter generado al destino de este script (Android).
@@ -35,10 +35,8 @@ foreach ($folder in @('models','controllers','services','views')) {
             Copy-Item -LiteralPath $_.FullName -Destination $targetSource
         }
 }
-$audioStage = Join-Path $stage 'assets\audio'
-New-Item -ItemType Directory -Path $audioStage -Force | Out-Null
-Copy-Item -LiteralPath (Join-Path $projectRoot 'assets\audio\demo.wav') `
-    -Destination $audioStage
+$assetsStage = Join-Path $stage 'assets'
+New-Item -ItemType Directory -Path $assetsStage -Force | Out-Null
 foreach ($name in @('sonoteca.ico', 'sonoteca.png')) {
     Copy-Item -LiteralPath (Join-Path $projectRoot ('assets\' + $name)) `
         -Destination (Join-Path $stage 'assets')

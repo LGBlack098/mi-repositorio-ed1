@@ -72,10 +72,6 @@ class Biblioteca:
         """Devuelva la cantidad de canciones en O(1)."""
         return len(self._canciones)
 
-    def memoria_nodos(self) -> int:
-        """Consulte memoria aproximada del catálogo sin exponer nodos."""
-        return self._canciones.memoria_nodos()
-
     def obtener(self, identificador: int) -> Cancion:
         """Busque por ID; O(n), ValueError si no existe."""
         cancion = self._canciones.buscar(

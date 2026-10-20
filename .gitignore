@@ -6,7 +6,6 @@ tmp/
 proyectos/playlist/data/
 proyectos/playlist/assets/audio/importados/
 proyectos/playlist/assets/audio/*
-!proyectos/playlist/assets/audio/demo.wav
 proyectos/playlist/dist/
 proyectos/playlist/build/
 proyectos/playlist/*.spec

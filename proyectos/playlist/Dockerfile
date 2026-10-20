@@ -2,12 +2,12 @@ FROM python:3.12-slim
 WORKDIR /app
 COPY requirements-web.txt ./
 RUN pip install --no-cache-dir -r requirements-web.txt
-COPY main.py demo.py generar_demo.py ./
+COPY main.py ./
 COPY models ./models
 COPY controllers ./controllers
 COPY services ./services
 COPY views ./views
-COPY assets/audio/demo.wav ./assets/audio/demo.wav
+COPY assets/sonoteca.ico assets/sonoteca.png ./assets/
 ENV SONOTECA_DATA_DIR=/data
 VOLUME ["/data"]
 EXPOSE 8000

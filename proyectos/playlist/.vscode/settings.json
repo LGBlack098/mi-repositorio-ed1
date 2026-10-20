@@ -7,7 +7,7 @@
     ".venv": true,
     "build": true,
     "dist": true,
-    "docs": true,
+    "data": true,
     ".ruff_cache": true,
     "**/__pycache__": true,
     "*.spec": true

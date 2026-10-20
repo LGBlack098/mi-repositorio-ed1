@@ -6,8 +6,6 @@ from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 from typing import Generic, TypeVar
 
-from models.estructuras.memoria import estimar_nodos
-
 T = TypeVar("T")
 
 
@@ -36,10 +34,6 @@ class ListaCircular(Generic[T]):
     def __len__(self) -> int:
         """Devuelva el tamaño en O(1)."""
         return self._tamano
-
-    def memoria_nodos(self) -> int:
-        """Estime bytes de nodos, sin seguir indefinidamente el ciclo."""
-        return estimar_nodos(self._cabeza, self._tamano)
 
     def agregar(self, dato: T) -> None:
         """Inserte antes de cabeza, conservando el cursor; O(1)."""

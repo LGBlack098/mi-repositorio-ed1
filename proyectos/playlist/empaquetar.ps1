@@ -1,4 +1,4 @@
-# Genere una distribución portable; solo incluye el audio sintético propio.
+# Genere una distribución portable sin música ni datos personales.
 $ErrorActionPreference = 'Stop'
 $projectRoot = $PSScriptRoot
 $projectPython = Join-Path $projectRoot '.venv\Scripts\python.exe'
@@ -25,7 +25,7 @@ try {
     }
     & $projectPython -m flet.cli pack main.py --name Sonoteca --onedir `
         --icon assets/sonoteca.ico `
-        --add-data 'assets/audio/demo.wav:assets/audio' 'assets/sonoteca.ico:assets' 'assets/sonoteca.png:assets' 'README.md:.' `
+        --add-data 'assets/sonoteca.ico:assets' 'assets/sonoteca.png:assets' 'README.md:.' `
         --hidden-import flet_audio --product-name Sonoteca `
         --pyinstaller-build-args=--collect-data=flet_web `
         --product-version 1.3.0 --file-version 1.3.0.0 `
@@ -50,6 +50,15 @@ try {
     }
     # Conservar fuentes legibles para inspección y distribución portable.
     $internalRoot = Join-Path $projectRoot 'dist\Sonoteca\_internal'
+    foreach ($obsolete in @('demo.py','generar_demo.py','documentar.py','views\visualizador.py','views\recorrido_circular.py','services\experimento.py','models\metricas.py','models\estructuras\memoria.py','assets\audio\demo.wav')) {
+        $obsoletePath = [IO.Path]::GetFullPath((Join-Path $internalRoot $obsolete))
+        if (-not $obsoletePath.StartsWith($internalRoot + '\')) {
+            throw 'Archivo fuera de la distribución.'
+        }
+        if (Test-Path -LiteralPath $obsoletePath -PathType Leaf) {
+            Remove-Item -LiteralPath $obsoletePath
+        }
+    }
     Get-ChildItem -LiteralPath $projectRoot -Filter '*.py' -File |
         Copy-Item -Destination $internalRoot -Force
     foreach ($folder in @('models','controllers','services','views')) {

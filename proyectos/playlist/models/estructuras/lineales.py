@@ -6,8 +6,6 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import Generic, TypeVar
 
-from models.estructuras.memoria import estimar_nodos
-
 T = TypeVar("T")
 
 
@@ -30,10 +28,6 @@ class Pila(Generic[T]):
     def __len__(self) -> int:
         """Devuelva el tamaño sin recorrer; O(1)."""
         return self._tamano
-
-    def memoria_nodos(self) -> int:
-        """Estime bytes superficiales desde el tope; O(n)."""
-        return estimar_nodos(self._tope, self._tamano)
 
     def apilar(self, dato: T) -> None:
         """Inserte un nuevo tope; O(1)."""
@@ -75,10 +69,6 @@ class Cola(Generic[T]):
     def __len__(self) -> int:
         """Devuelva la cantidad en O(1)."""
         return self._tamano
-
-    def memoria_nodos(self) -> int:
-        """Estime bytes superficiales desde el frente; O(n)."""
-        return estimar_nodos(self._frente, self._tamano)
 
     def encolar(self, dato: T) -> None:
         """Inserte al final en O(1)."""
@@ -159,11 +149,6 @@ class ColaCircular(Generic[T]):
     def __len__(self) -> int:
         """Devuelva tamaño en O(1)."""
         return self._tamano
-
-    def memoria_nodos(self) -> int:
-        """Estime bytes de exactamente n nodos; O(n), sin incluir datos."""
-        frente = self._final.siguiente if self._final else None
-        return estimar_nodos(frente, self._tamano)
 
     def encolar(self, dato: T) -> None:
         """Agregue al final; O(1), ValueError si llena sin sobrescribir."""

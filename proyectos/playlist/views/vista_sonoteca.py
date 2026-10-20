@@ -138,7 +138,7 @@ class VistaSonoteca(VistaReproductor):
         self.actualizar()
 
     def _menu_herramientas(self):
-        """Ofrezca historial, respaldos y ajustes sin vistas académicas."""
+        """Ofrezca historial, respaldos y ajustes musicales."""
         return ft.PopupMenuButton(
             icon=ft.Icons.SETTINGS_OUTLINED,
             tooltip="Opciones de música",

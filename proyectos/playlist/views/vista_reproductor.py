@@ -1,7 +1,7 @@
 """Experiencia musical: biblioteca, playlists y controles persistentes.
 
-La clase reutiliza adaptadores de la vista base para archivos y
-exposición, pero el flujo cotidiano se expresa en términos musicales.
+La vista base conserva los diálogos de archivos y el guardado.
+Esta clase añade biblioteca, playlists y transporte de audio.
 """
 
 import asyncio
@@ -15,7 +15,6 @@ from services.metadatos import leer_metadatos
 from services.reproductor import Reproductor
 from services.rutas_multimedia import fuente_multimedia
 from views.vista_biblioteca import VistaBiblioteca
-from views.visualizador import visualizar
 
 FONDO = "#121212"
 SUPERFICIE = "#181818"
@@ -81,7 +80,7 @@ def portada(semilla: int = 0, tamano: int = 160) -> ft.Container:
 
 
 class VistaReproductor(VistaBiblioteca):
-    """Mantenga la música como flujo principal y la exposición como apoyo.
+    """Construya biblioteca, playlists y controles musicales persistentes.
 
     Reutiliza de VistaBiblioteca diálogos, respaldo y reglas de eventos.
     Modelo y controlador conservan sus estructuras manuales sin cambios.
@@ -333,14 +332,11 @@ class VistaReproductor(VistaBiblioteca):
         )
 
     def _menu_herramientas(self) -> ft.PopupMenuButton:
-        """Reúna respaldo y exposición sin ocupar la navegación musical."""
+        """Reúna respaldo e historial sin ocupar la navegación musical."""
         return ft.PopupMenuButton(
             icon=ft.Icons.MORE_HORIZ,
             tooltip="Herramientas",
             items=[
-                self._item(
-                    "Vista académica", lambda: self._navegar("Académica")
-                ),
                 self._item(
                     "Deshacer edición", lambda: self.controlador.historial()
                 ),
@@ -476,24 +472,8 @@ class VistaReproductor(VistaBiblioteca):
         elif self.seccion == "Siguientes":
             contenido = self._siguientes(datos)
         else:
-            self._selector.options = [
-                ft.DropdownOption(str(p.identificador), p.nombre)
-                for p in estado.playlists
-            ]
-            self._selector.value = str(self.playlist_id) if ids else None
-            contenido = [
-                self._boton(
-                    "Volver a mi música", lambda: self._navegar("Biblioteca")
-                ),
-                ft.Text("Vista académica", size=26),
-                ft.Text(
-                    "Implementación y estado interno para la exposición.",
-                    color=SUAVE,
-                ),
-                self._selector,
-                *super()._colas(datos),
-                *visualizar(datos, self.playlist_id),
-            ]
+            self.seccion = "Biblioteca"
+            contenido = self._biblioteca(estado)
         self._contenido.controls = contenido
         self._panel_actual.content = self._ahora()
         self._actualizar_controles()
@@ -899,7 +879,7 @@ class VistaReproductor(VistaBiblioteca):
         ]
 
     def _ahora(self) -> ft.Column:
-        """Muestre el tema actual en un panel musical, sin datos académicos."""
+        """Muestre el tema actual y las próximas canciones del panel."""
         c = self._seleccion
         return ft.Column(
             [

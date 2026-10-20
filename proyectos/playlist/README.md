@@ -35,17 +35,10 @@ python -m venv .venv
 .\.venv\Scripts\python.exe main.py
 ```
 
-El primer inicio queda vacío. Para probar títulos ficticios y una señal
-sintética propia de seis segundos, usa `--demo` con un archivo de datos nuevo:
-
-```powershell
-.\.venv\Scripts\python.exe main.py --demo --datos data/demo.json
-```
-
-Si existe un guardado válido, se recupera antes de crear datos de ejemplo.
-`--datos ruta.json` selecciona otro guardado; `--port 8551` cambia el puerto.
-`--movil` permite revisar la disposición estrecha en Windows. Esa ventana
-no emula Android ni sus permisos.
+El primer inicio queda vacío. Los siguientes inicios recuperan la biblioteca
+local guardada. `--datos ruta.json` permite elegir otro guardado y
+`--port 8551` cambia el puerto. `--movil` revisa una disposición estrecha
+en Windows; no emula Android.
 
 ## Uso
 
@@ -73,7 +66,6 @@ repetición y volumen siguen disponibles en la disposición compacta.
 | `controllers/` | Entradas, coordinación del modelo y medición de acciones. |
 | `services/` | Metadatos, archivos, audio, persistencia y experimento aislado. |
 | `views/` | Interfaz Flet, fichas, diagramas y animación. |
-| `tests/` | Casos de dominio, enlaces, audio, datos y disposición. |
 
 El modelo y el controlador no importan Flet. La vista solicita la política
 musical al controlador, sin modificar enlaces privados.
@@ -114,42 +106,38 @@ Límites: JSON de hasta 5 MiB, audio de hasta 50 MiB por archivo y portadas
 JPEG/PNG incrustadas de hasta 3 MiB. La compatibilidad de códecs depende del
 cliente. Los errores se comunican sin borrar la biblioteca.
 
-## Instrumentación interna
+## Leer y explicar el código
 
-La instrumentación mide acciones del controlador con un reloj monotónico:
-latencia, éxito/error y acciones/s observadas en una ventana de diez segundos.
-El audio, el render y el guardado posterior quedan fuera de esa medición.
+- `main.py`: inicia la aplicación y recupera el guardado.
+- `views/vista_sonoteca.py`: presenta las canciones y recibe las acciones.
+- `views/vista_reproductor.py`: biblioteca, playlists y controles de audio.
+- `views/vista_biblioteca.py`: diálogos y acciones compartidas de guardado.
+- `controllers/controlador_biblioteca.py`: coordina las operaciones.
+- `models/cancion.py`: representa título, artista, duración e identidad.
+- `models/biblioteca.py`: agrega, busca y elimina canciones.
+- `models/estructuras/`: implementa los nodos, listas, pilas y colas.
+- `services/`: importación de archivos, metadatos, persistencia y audio.
 
-La memoria se estima con el tamaño superficial de cada nodo y su diccionario
-de atributos. No incluye sus datos, buffers ni archivos; no representa RAM
-total. Un experimento aislado compara inserción final y búsqueda ausente
-con 100, 1000 y 5000 nodos. Los tiempos son locales y no prueban por sí solos
-la complejidad asintótica.
+Al importar una canción, la vista recibe el archivo; los servicios lo
+copian y leen sus metadatos; el controlador solicita añadirlo al modelo;
+la lista enlaza un nodo nuevo y la vista muestra el estado actualizado.
 
-La interfaz principal muestra únicamente funciones musicales. Los módulos
-de diagramas, recorrido circular y comparación permanecen disponibles en
-el código y sus pruebas; no hay un panel académico en la aplicación.
-
-## Pruebas y estilo
+Las funciones incluyen docstrings con propósito, entradas, resultados o
+errores relevantes. Se siguen PEP 8 para estilo y PEP 257 para documentación.
+Ruff comprueba el formato y las reglas configuradas; D401 se revisa
+manualmente porque analiza gramática inglesa y el código se documenta
+en español.
 
 ```powershell
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv\Scripts\python.exe -m ruff check .
 .\.venv\Scripts\python.exe -m ruff format --check .
 ```
 
-La suite contiene 72 pruebas: enlaces, cursor, vacíos, prioridades, historial,
-JSON, importación, metadatos, portadas, mediciones y disposición móvil.
-El servicio de audio se simula en pruebas unitarias. No se afirma cobertura
-del 100% ni compatibilidad con todos los dispositivos.
-
-Las regresiones de interfaz comprueban la selección de una aparición entre
-canciones repetidas, el refresco sin construir dos veces la vista, la cola
-compacta, los atajos y el volumen inicial completo.
-
-Se siguen PEP 8, anotaciones de tipo y docstrings según PEP 257. D401 se
-revisa manualmente porque su análisis gramatical inglés no se adapta a las
-docstrings en español.
+La aplicación no incluye demos, generadores de documentación ni módulos
+de visualización educativa. Las pruebas de desarrollo se conservan aparte
+de esta carpeta; la verificación pública revisa sintaxis, importaciones,
+estilo y formato. Esas comprobaciones no sustituyen una prueba de audio
+en cada dispositivo.
 
 ## Web y distribución
 
@@ -193,5 +181,4 @@ físico. iOS requiere un entorno de compilación y verificación propio.
 - [Mutagen](https://mutagen.readthedocs.io/).
 - [PEP 8](https://peps.python.org/pep-0008/),
   [PEP 257](https://peps.python.org/pep-0257/).
-- [unittest](https://docs.python.org/3/library/unittest.html),
-  [perf_counter](https://docs.python.org/3/library/time.html#time.perf_counter).
+- [Documentación de Python](https://docs.python.org/3/).

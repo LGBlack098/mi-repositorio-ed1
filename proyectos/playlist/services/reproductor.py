@@ -25,7 +25,7 @@ class Reproductor:
         self.terminado = terminado
         self._listo = asyncio.Event()
         self.audio = fa.Audio(
-            src="audio/demo.wav",
+            src=None,
             volume=1.0,
             release_mode=fa.ReleaseMode.STOP,
             on_state_change=self._estado,

@@ -1,4 +1,4 @@
-"""Entrada local: python main.py [--web] [--port 8550] [--sin-demo]."""
+"""Inicie Sonoteca en escritorio o web: python main.py [--web]."""
 
 import argparse
 import logging
@@ -10,8 +10,6 @@ from pathlib import Path
 import flet as ft
 
 from controllers.controlador_biblioteca import ControladorBiblioteca
-from demo import crear_demo
-from generar_demo import generar
 from services.persistencia import cargar, codificar
 from views.vista_sonoteca import VistaSonoteca
 
@@ -29,7 +27,7 @@ BASE = (
 )
 
 
-def construir_controlador(ruta: Path, demo: bool = False):
+def construir_controlador(ruta: Path):
     """Cargue guardado si existe; ante error no sobrescriba el archivo.
 
     Devuelve controlador y aviso de inicio. Un JSON inválido deja una
@@ -42,11 +40,7 @@ def construir_controlador(ruta: Path, demo: bool = False):
             return controlador, "Biblioteca guardada recuperada."
         except (OSError, ValueError) as error:
             return controlador, f"No se cargó el guardado: {error}"
-    return (crear_demo() if demo else controlador), (
-        "Demostración: títulos ficticios y audio sintético de 6 s."
-        if demo
-        else ""
-    )
+    return controlador, ""
 
 
 def main(pagina: ft.Page) -> None:
@@ -74,8 +68,6 @@ def ejecutar() -> None:
     parser.add_argument("--port", type=int, default=8550)
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--movil", action="store_true")
-    parser.add_argument("--sin-demo", action="store_true")
-    parser.add_argument("--demo", action="store_true")
     parser.add_argument(
         "--datos", type=Path, default=BASE / "data/musica.json"
     )
@@ -87,22 +79,15 @@ def ejecutar() -> None:
             shutil.copyfile(
                 RECURSOS / "assets" / nombre, BASE / "assets" / nombre
             )
-        destino = BASE / "assets/audio/demo.wav"
-        if not destino.exists():
-            shutil.copyfile(RECURSOS / "assets/audio/demo.wav", destino)
     if args.sin_abrir:
         os.environ["FLET_FORCE_WEB_SERVER"] = "true"
-    if not (BASE / "assets/audio/demo.wav").exists():
-        generar(BASE / "assets/audio/demo.wav")
 
     def inicio(pagina: ft.Page) -> None:
         """Cree una sesión MVC por conexión usando la ruta elegida."""
         if args.movil:
             pagina.window.width = 430
             pagina.window.height = 720
-        controlador, aviso = construir_controlador(
-            args.datos, args.demo and not args.sin_demo
-        )
+        controlador, aviso = construir_controlador(args.datos)
         vista = VistaSonoteca(controlador, BASE, args.datos)
         vista.montar(pagina)
         vista._avisar(aviso)

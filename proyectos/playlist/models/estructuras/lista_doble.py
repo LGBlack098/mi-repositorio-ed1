@@ -6,8 +6,6 @@ from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 from typing import Generic, TypeVar
 
-from models.estructuras.memoria import estimar_nodos
-
 T = TypeVar("T")
 
 
@@ -41,10 +39,6 @@ class ListaDoblementeEnlazada(Generic[T]):
     def __len__(self) -> int:
         """Devuelva el tamaño registrado sin recorrer nodos; O(1)."""
         return self._tamano
-
-    def memoria_nodos(self) -> int:
-        """Estime bytes superficiales de nodos y atributos; O(n)."""
-        return estimar_nodos(self._cabeza, self._tamano)
 
     def agregar_final(self, dato: T) -> None:
         """Enlace un dato nuevo después de la cola; O(1).
