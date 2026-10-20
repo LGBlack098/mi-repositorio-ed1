@@ -164,11 +164,11 @@ class TestSonoteca(unittest.IsolatedAsyncioTestCase):
             vista._volumen_panel.controls.count(vista._boton_cola), 1
         )
 
-    async def test_volumen_inicial_bajo_y_duracion_sin_seleccion(self):
-        """Inicie al cinco por ciento y no muestre duración de la precarga."""
+    async def test_volumen_inicial_completo_y_duracion_sin_seleccion(self):
+        """Inicie al cien por ciento y no muestre duración de la precarga."""
         vista, _ = self.montar()
-        self.assertEqual(vista._audio.audio.volume, 0.05)
-        self.assertEqual(vista._volumen_control.value, 0.05)
+        self.assertEqual(vista._audio.audio.volume, 1.0)
+        self.assertEqual(vista._volumen_control.value, 1.0)
         vista._audio.duracion = 6
         vista._actualizar_controles()
         self.assertEqual(vista._total.value, "0:00")

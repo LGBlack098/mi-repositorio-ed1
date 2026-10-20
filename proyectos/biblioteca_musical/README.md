@@ -11,7 +11,7 @@ cola de reproducción y una interfaz adaptable a escritorio y teléfono.
 - Mostrar la portada incrustada JPEG/PNG; usar arte local cuando falta.
 - Buscar canciones y crear playlists con apariciones independientes.
 - Reproducir, pausar, cambiar de pista, buscar posición y ajustar volumen.
-- Iniciar con volumen al 5 % y acceder a la ficha desde la canción del dock.
+- Iniciar con volumen al 100 % y acceder a la ficha desde la canción del dock.
 - Repetición opcional y avance automático al terminar la pista real.
 - Añadir solicitudes normales, reproducir después y alternar playlists.
 - Guardar cambios automáticamente y restaurar respaldos.
@@ -142,7 +142,7 @@ del 100% ni compatibilidad con todos los dispositivos.
 
 Las regresiones de interfaz comprueban la selección de una aparición entre
 canciones repetidas, el refresco sin construir dos veces la vista, la cola
-compacta, los atajos y el volumen inicial bajo.
+compacta, los atajos y el volumen inicial completo.
 
 Se siguen PEP 8, anotaciones de tipo y docstrings según PEP 257. D401 se
 revisa manualmente porque su análisis gramatical inglés no se adapta a las
