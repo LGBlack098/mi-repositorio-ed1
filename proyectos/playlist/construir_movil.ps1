@@ -3,15 +3,14 @@ param([string]$BuildDirectory = '')
 $ErrorActionPreference = 'Stop'
 $projectRoot = $PSScriptRoot
 $projectPython = Join-Path $projectRoot '.venv\Scripts\python.exe'
-$projectFlet = Join-Path $projectRoot '.venv\Scripts\flet.exe'
-$stageParent = Join-Path (Split-Path (Split-Path $projectRoot)) 'tmp\sonoteca-build'
+$stageParent = Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'Sonoteca\Cache\build'
 $stage = if ($BuildDirectory) {
     [IO.Path]::GetFullPath($BuildDirectory)
 } else {
     Join-Path $stageParent 'android'
 }
 if (-not $stage.StartsWith(([IO.Path]::GetFullPath($stageParent)) + '\')) {
-    throw 'El directorio de compilación móvil debe quedar en tmp/sonoteca-build.'
+    throw 'El directorio de compilación móvil debe quedar en la caché de Sonoteca.'
 }
 New-Item -ItemType Directory -Path $stage -Force | Out-Null
 foreach ($file in @('main.py','demo.py','generar_demo.py','pyproject.toml')) {
@@ -53,7 +52,7 @@ try {
     $env:FLUTTER_WINDOWS = 'false'
     $env:FLUTTER_LINUX = 'false'
     $env:FLUTTER_MACOS = 'false'
-    & $projectFlet build apk $stage --yes --no-rich-output --arch arm64-v8a `
+    & $projectPython -m flet.cli build apk $stage --yes --no-rich-output --arch arm64-v8a `
         --product Sonoteca --build-version 1.3.0 `
         --output (Join-Path $projectRoot 'dist\android')
     if ($LASTEXITCODE -ne 0) { throw 'No se pudo generar el APK. Revise el registro.' }

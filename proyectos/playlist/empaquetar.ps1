@@ -2,7 +2,6 @@
 $ErrorActionPreference = 'Stop'
 $projectRoot = $PSScriptRoot
 $projectPython = Join-Path $projectRoot '.venv\Scripts\python.exe'
-$projectFlet = Join-Path $projectRoot '.venv\Scripts\flet.exe'
 $portableData = Join-Path $projectRoot 'dist\Sonoteca\SonotecaDatos'
 $backup = $null
 Push-Location -LiteralPath $projectRoot
@@ -24,7 +23,7 @@ try {
         Copy-Item -LiteralPath $portableData -Destination $backup -Recurse
         Write-Output "Respaldo de datos portables: $backup"
     }
-    & $projectFlet pack main.py --name Sonoteca --onedir `
+    & $projectPython -m flet.cli pack main.py --name Sonoteca --onedir `
         --icon assets/sonoteca.ico `
         --add-data 'assets/audio/demo.wav:assets/audio' 'assets/sonoteca.ico:assets' 'assets/sonoteca.png:assets' 'README.md:.' `
         --hidden-import flet_audio --product-name Sonoteca `
