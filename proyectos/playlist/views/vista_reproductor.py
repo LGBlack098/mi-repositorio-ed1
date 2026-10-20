@@ -317,6 +317,13 @@ class VistaReproductor(VistaBiblioteca):
 
     def _importador(self, texto="Añadir música") -> ft.Button:
         """Abra selección múltiple por gesto cliente en web y escritorio."""
+        escritorio = not getattr(self._pagina, "web", False) and getattr(
+            self._pagina, "platform", None
+        ) in (
+            ft.PagePlatform.WINDOWS,
+            ft.PagePlatform.LINUX,
+            ft.PagePlatform.MACOS,
+        )
         return ft.Button(
             texto,
             icon=ft.Icons.ADD,
@@ -325,7 +332,8 @@ class VistaReproductor(VistaBiblioteca):
             action=ft.PickFiles(
                 self._picker_musica,
                 allow_multiple=True,
-                with_data=True,
+                # En escritorio se copia desde la ruta; no se envían bytes.
+                with_data=not escritorio,
                 file_type=ft.FilePickerFileType.CUSTOM,
                 allowed_extensions=["mp3", "wav", "flac", "ogg", "m4a"],
             ),
@@ -1013,12 +1021,17 @@ class VistaReproductor(VistaBiblioteca):
         if not evento.files or self._importando:
             return
         self._importando = True
+        total = len(evento.files)
+        self._boton_importar.disabled = True
+        self._avisar("Añadiendo música…")
 
         async def importar() -> None:
             """Valide cada archivo; conserve los correctos si otro falla."""
             errores = []
             cantidad = 0
-            for archivo in evento.files:
+            for indice, archivo in enumerate(evento.files, 1):
+                if total > 1:
+                    self._avisar(f"Añadiendo canciones: {indice} de {total}…")
                 try:
                     ruta = await asyncio.to_thread(
                         self.archivos.importar,
@@ -1056,6 +1069,9 @@ class VistaReproductor(VistaBiblioteca):
             await self._accion(importar)()
         finally:
             self._importando = False
+            self._boton_importar.disabled = False
+            if self._pagina:
+                self._pagina.update()
 
     def _respaldo(self) -> None:
         """Abra restauración voluntaria desde las herramientas secundarias."""

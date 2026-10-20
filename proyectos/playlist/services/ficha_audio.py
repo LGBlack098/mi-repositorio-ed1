@@ -7,15 +7,16 @@ import mutagen
 from mutagen.flac import Picture
 
 
-def extraer_portada(ruta: Path) -> str:
+def extraer_portada(ruta: Path, audio=None) -> str:
     """Copie una portada JPEG/PNG de hasta 3 MB a assets/portadas.
 
     Admite ID3/APIC, FLAC, MP4/covr y comentarios Vorbis. Si falta o
     es ilegible, devuelve vacío para usar el arte predeterminado.
-    No cambia el audio ni descarga imágenes.
+    Reutiliza el audio analizado si se proporciona. No modifica el original.
     """
     try:
-        audio = mutagen.File(ruta)
+        if audio is None:
+            audio = mutagen.File(ruta)
         if audio is None:
             return ""
         imagenes = list(getattr(audio, "pictures", ()))
@@ -57,7 +58,7 @@ def leer_ficha(ruta: Path, nombre: str) -> dict:
         "nombre_archivo": Path(nombre).name,
         "tamano_bytes": ruta.stat().st_size,
         "formato": audio.__class__.__name__.upper(),
-        "portada": extraer_portada(ruta),
+        "portada": extraer_portada(ruta, audio),
     }
 
 
