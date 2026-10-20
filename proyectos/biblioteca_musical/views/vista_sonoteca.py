@@ -56,7 +56,7 @@ class VistaSonoteca(VistaReproductor):
     def _preparar_presentacion(self):
         """Configure los controles musicales antes del primer dibujo."""
         pagina = self._pagina
-        pagina.title = "Sonoteca · Música local"
+        pagina.title = "Sonoteca"
         pagina.bgcolor = FONDO_SPOTIFY
         self._lateral.bgcolor = NEGRO_LATERAL
         self._panel_actual.bgcolor = NEGRO_LATERAL

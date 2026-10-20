@@ -83,6 +83,10 @@ def ejecutar() -> None:
     logging.basicConfig(level=logging.INFO)
     if BASE != RECURSOS:
         (BASE / "assets/audio").mkdir(parents=True, exist_ok=True)
+        for nombre in ("sonoteca.ico", "sonoteca.png"):
+            shutil.copyfile(
+                RECURSOS / "assets" / nombre, BASE / "assets" / nombre
+            )
         destino = BASE / "assets/audio/demo.wav"
         if not destino.exists():
             shutil.copyfile(RECURSOS / "assets/audio/demo.wav", destino)
@@ -101,8 +105,6 @@ def ejecutar() -> None:
         )
         vista = VistaSonoteca(controlador, BASE, args.datos)
         vista.montar(pagina)
-        if args.movil:
-            pagina.title = "Sonoteca · Vista móvil"
         vista._avisar(aviso)
 
     ft.run(

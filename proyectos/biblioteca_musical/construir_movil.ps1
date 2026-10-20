@@ -40,6 +40,10 @@ $audioStage = Join-Path $stage 'assets\audio'
 New-Item -ItemType Directory -Path $audioStage -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $projectRoot 'assets\audio\demo.wav') `
     -Destination $audioStage
+foreach ($name in @('sonoteca.ico', 'sonoteca.png')) {
+    Copy-Item -LiteralPath (Join-Path $projectRoot ('assets\' + $name)) `
+        -Destination (Join-Path $stage 'assets')
+}
 # El destino Android no necesita plugins de escritorio ni sus symlinks.
 # Limitar plataformas solo en este proceso evita cambiar ajustes de Windows.
 $previousWindows = $env:FLUTTER_WINDOWS

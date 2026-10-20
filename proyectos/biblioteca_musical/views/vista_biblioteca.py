@@ -82,7 +82,7 @@ class VistaBiblioteca:
     def montar(self, pagina: ft.Page) -> None:
         """Monte controles y servicios sin autoplay ni alterar el catálogo."""
         self._pagina = pagina
-        pagina.title = "Sonoteca | Biblioteca musical"
+        pagina.title = "Sonoteca"
         pagina.theme_mode = ft.ThemeMode.DARK
         pagina.theme = ft.Theme(color_scheme_seed=ACENTO)
         pagina.bgcolor = "#10151F"

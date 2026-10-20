@@ -3,6 +3,9 @@
 Reproductor de música local en Python y Flet, con biblioteca, playlists,
 cola de reproducción y una interfaz adaptable a escritorio y teléfono.
 
+El título de la ventana es **Sonoteca**. La ventana, el ejecutable Windows
+y la cabecera comparten el icono rosa y azul del cliente Flet original.
+
 ## Funcionalidades
 
 - Importar varios archivos WAV, MP3, OGG, FLAC o M4A.

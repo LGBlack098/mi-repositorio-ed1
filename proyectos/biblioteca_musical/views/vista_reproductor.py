@@ -13,6 +13,7 @@ import flet as ft
 from services.ficha_audio import leer_ficha
 from services.metadatos import leer_metadatos
 from services.reproductor import Reproductor
+from services.rutas_multimedia import fuente_multimedia
 from views.vista_biblioteca import VistaBiblioteca
 from views.visualizador import visualizar
 
@@ -156,7 +157,9 @@ class VistaReproductor(VistaBiblioteca):
     def montar(self, pagina: ft.Page) -> None:
         """Monte una ventana musical con barra de reproducción persistente."""
         self._pagina = pagina
-        pagina.title = "Sonoteca · Tu música"
+        pagina.title = "Sonoteca"
+        if getattr(pagina, "window", None) is not None:
+            pagina.window.icon = str(self.archivos.assets / "sonoteca.ico")
         pagina.padding = 0
         pagina.bgcolor = FONDO
         pagina.theme_mode = ft.ThemeMode.DARK
@@ -184,8 +187,12 @@ class VistaReproductor(VistaBiblioteca):
             ],
             wrap=True,
         )
-        self._icono_cabecera = ft.Icon(
-            ft.Icons.HEADPHONES, color=ACENTO, size=26
+        self._icono_cabecera = ft.Image(
+            src=fuente_multimedia(self.archivos.assets, "sonoteca.png"),
+            width=26,
+            height=26,
+            fit=ft.BoxFit.CONTAIN,
+            tooltip="Sonoteca",
         )
         self._boton_importar = self._importador()
         self._cabecera = ft.Row(

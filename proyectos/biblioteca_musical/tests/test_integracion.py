@@ -192,6 +192,7 @@ class TestPantallas(unittest.TestCase):
         self.assertTrue(vista._lateral.visible)
         self.assertTrue(vista._panel_actual.visible)
         self.assertEqual(vista.seccion, "Biblioteca")
+        self.assertEqual(pagina.title, "Sonoteca")
         pagina.update.reset_mock()
         vista.seccion = "Siguientes"
         vista.actualizar()

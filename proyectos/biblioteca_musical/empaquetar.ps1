@@ -25,7 +25,8 @@ try {
         Write-Output "Respaldo de datos portables: $backup"
     }
     & $projectFlet pack main.py --name Sonoteca --onedir `
-        --add-data 'assets/audio/demo.wav:assets/audio' 'README.md:.' `
+        --icon assets/sonoteca.ico `
+        --add-data 'assets/audio/demo.wav:assets/audio' 'assets/sonoteca.ico:assets' 'assets/sonoteca.png:assets' 'README.md:.' `
         --hidden-import flet_audio --product-name Sonoteca `
         --pyinstaller-build-args=--collect-data=flet_web `
         --product-version 1.3.0 --file-version 1.3.0.0 `
