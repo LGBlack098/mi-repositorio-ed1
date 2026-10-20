@@ -6,7 +6,7 @@ import unittest
 from base64 import b64decode
 from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from mutagen.id3 import APIC
 from mutagen.wave import WAVE
@@ -21,6 +21,7 @@ from models.estructuras.lista_doble import ListaDoblementeEnlazada
 from models.metricas import Metricas, Muestra
 from services.experimento import comparar
 from services.ficha_audio import leer_ficha
+from services.rutas_multimedia import fuente_multimedia
 from views.recorrido_circular import RecorridoCircular
 from views.vista_sonoteca import VistaSonoteca
 
@@ -143,6 +144,21 @@ class TestFicha(unittest.TestCase):
         c.asociar_audio(1, "audio/demo.wav", tamano_bytes=200)
         c.asociar_audio(1, "audio/nuevo.mp3")
         self.assertEqual(c.listar()[0].tamano_bytes, 0)
+
+    def test_rutas_de_portada_moviles_y_web(self):
+        """Resuelva portadas privadas en móvil y preserve URL en web."""
+        base = Path(tempfile.gettempdir()) / "assets"
+        with patch.dict("os.environ", {"FLET_PLATFORM": "android"}):
+            self.assertEqual(
+                fuente_multimedia(base, "portadas/x.png"),
+                str((base / "portadas/x.png").resolve()),
+            )
+            with self.assertRaises(ValueError):
+                fuente_multimedia(base, "../secreto.png")
+        with patch.dict("os.environ", {"FLET_PLATFORM": ""}):
+            self.assertEqual(
+                fuente_multimedia(base, "portadas/x.png"), "portadas/x.png"
+            )
 
 
 class TestPantallas(unittest.TestCase):

@@ -7,6 +7,7 @@ from collections.abc import Callable
 import flet_audio as fa
 
 from services.archivos_audio import ArchivosAudio
+from services.rutas_multimedia import fuente_multimedia
 
 
 class Reproductor:
@@ -33,6 +34,7 @@ class Reproductor:
             on_duration_change=self._duracion,
         )
         self.actual_id: int | None = None
+        self.archivo_actual = ""
         self.pausado = False
         self.posicion = 0
         self.duracion = 0
@@ -45,7 +47,8 @@ class Reproductor:
         No bloquea el bucle de interfaz. Errores del códec o del servicio
         se propagan para que la vista los muestre y detenga el avance.
         """
-        fuente = self.archivos.comprobar(archivo)
+        relativa = self.archivos.comprobar(archivo)
+        fuente = fuente_multimedia(self.archivos.assets, relativa)
         logging.info("Preparando audio: %s", fuente)
         async with self._candado:
             self._activo = False
@@ -59,6 +62,7 @@ class Reproductor:
             # el manejador, demasiado tarde para cargar esta pista.
             self.audio.update()
             self.actual_id = identificador
+            self.archivo_actual = relativa
             self.posicion = 0
             self.pausado = False
             try:

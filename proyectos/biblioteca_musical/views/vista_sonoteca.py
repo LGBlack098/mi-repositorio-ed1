@@ -6,6 +6,7 @@ import flet as ft
 
 from services.experimento import comparar
 from services.ficha_audio import leer_ficha, peso_legible
+from services.rutas_multimedia import fuente_multimedia
 from views.recorrido_circular import RecorridoCircular
 from views.vista_reproductor import (
     SUAVE,
@@ -259,7 +260,7 @@ class VistaSonoteca(VistaReproductor):
             and (self.archivos.assets / cancion.portada).is_file()
         ):
             return ft.Image(
-                src=cancion.portada,
+                src=fuente_multimedia(self.archivos.assets, cancion.portada),
                 width=tamano,
                 height=tamano,
                 fit=ft.BoxFit.COVER,

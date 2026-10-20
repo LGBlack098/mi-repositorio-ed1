@@ -127,7 +127,7 @@ la complejidad asintótica.
 .\.venv\Scripts\python.exe -m ruff format --check .
 ```
 
-La suite contiene 62 pruebas: enlaces, cursor, vacíos, prioridades, historial,
+La suite contiene 64 pruebas: enlaces, cursor, vacíos, prioridades, historial,
 JSON, importación, metadatos, portadas, mediciones y disposición móvil.
 El servicio de audio se simula en pruebas unitarias. No se afirma cobertura
 del 100% ni compatibilidad con todos los dispositivos.

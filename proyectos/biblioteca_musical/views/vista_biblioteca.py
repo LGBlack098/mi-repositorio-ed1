@@ -632,7 +632,10 @@ class VistaBiblioteca:
                 ),
                 None,
             )
-            if actual is None or actual.archivo != self._audio.audio.src:
+            archivo_actual = getattr(
+                self._audio, "archivo_actual", self._audio.audio.src
+            )
+            if actual is None or actual.archivo != archivo_actual:
                 await self._detener()
 
     def _notificar_audio(self, estado: str) -> None:

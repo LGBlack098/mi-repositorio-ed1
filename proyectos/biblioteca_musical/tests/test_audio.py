@@ -72,6 +72,26 @@ class TestReproductor(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(ValueError):
             await self.r.buscar_posicion(7)
 
+    async def test_archivo_importado_nativo_conserva_identidad(self) -> None:
+        """Lea audio privado de Android sin invalidar su ruta persistida."""
+        from controllers.controlador_biblioteca import ControladorBiblioteca
+        from views.vista_reproductor import VistaReproductor
+
+        with patch.dict("os.environ", {"FLET_PLATFORM": "android"}):
+            await self.r.reproducir(1, "audio/test.wav")
+        self.assertTrue(Path(self.r.audio.src).is_absolute())
+        self.assertEqual(self.r.archivo_actual, "audio/test.wav")
+        c = ControladorBiblioteca()
+        c.agregar("Prueba", "Artista", "6", "audio/test.wav")
+        vista = VistaReproductor(c)
+        vista._audio = self.r
+        await vista._validar_audio()
+        self.assertEqual(self.r.actual_id, 1)
+        self.r.audio.pause.assert_not_awaited()
+        c.asociar_audio(1, "audio/otra.wav")
+        await vista._validar_audio()
+        self.assertIsNone(self.r.actual_id)
+
     async def test_error_y_archivo_ausente(self) -> None:
         """Rechace audio ausente y limpie identidad tras fallo de códec."""
         with self.assertRaises(ValueError):

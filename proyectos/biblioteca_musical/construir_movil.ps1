@@ -1,10 +1,18 @@
 # Prepare fuentes limpias: no empaquete audios ni datos del usuario.
+param([string]$BuildDirectory = '')
 $ErrorActionPreference = 'Stop'
 $projectRoot = $PSScriptRoot
 $projectPython = Join-Path $projectRoot '.venv\Scripts\python.exe'
 $projectFlet = Join-Path $projectRoot '.venv\Scripts\flet.exe'
 $stageParent = Join-Path (Split-Path (Split-Path $projectRoot)) 'tmp\sonoteca-build'
-$stage = Join-Path $stageParent ([guid]::NewGuid())
+$stage = if ($BuildDirectory) {
+    [IO.Path]::GetFullPath($BuildDirectory)
+} else {
+    Join-Path $stageParent 'android'
+}
+if (-not $stage.StartsWith(([IO.Path]::GetFullPath($stageParent)) + '\')) {
+    throw 'El directorio de compilación móvil debe quedar en tmp/sonoteca-build.'
+}
 New-Item -ItemType Directory -Path $stage -Force | Out-Null
 foreach ($file in @('main.py','demo.py','generar_demo.py','pyproject.toml')) {
     Copy-Item -LiteralPath (Join-Path $projectRoot $file) -Destination $stage
