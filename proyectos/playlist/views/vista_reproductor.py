@@ -212,7 +212,7 @@ class VistaReproductor(VistaBiblioteca):
         self._volumen_control = ft.Slider(
             min=0,
             max=1,
-            value=self._audio.audio.volume,
+            value=self._audio.volumen_actual,
             width=100,
             divisions=20,
             active_color=ACENTO,
@@ -372,7 +372,7 @@ class VistaReproductor(VistaBiblioteca):
                         await self._guardar_auto()
                     self.actualizar()
                 except Exception as error:
-                    logging.info("Acción musical no completada: %s", error)
+                    logging.exception("Acción musical no completada")
                     self._arrastrando = False
                     self._avisar(
                         str(error) or "El dispositivo no respondió.", True

@@ -162,7 +162,7 @@ class VistaSonoteca(VistaReproductor):
                 content=ft.Slider(
                     min=0,
                     max=1,
-                    value=self._audio.audio.volume,
+                    value=self._audio.volumen_actual,
                     divisions=20,
                     on_change=self._volumen,
                 ),

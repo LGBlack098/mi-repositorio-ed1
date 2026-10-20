@@ -24,15 +24,10 @@ class Reproductor:
         self.notificar = notificar
         self.terminado = terminado
         self._listo = asyncio.Event()
-        self.audio = fa.Audio(
-            src=None,
-            volume=1.0,
-            release_mode=fa.ReleaseMode.STOP,
-            on_state_change=self._estado,
-            on_position_change=self._posicion,
-            on_loaded=self._cargado,
-            on_duration_change=self._duracion,
-        )
+        # El cliente exige una fuente válida al registrar el servicio.
+        # Se crea al elegir la primera pista, sin precargar música ficticia.
+        self.audio: fa.Audio | None = None
+        self.volumen_actual = 1.0
         self.actual_id: int | None = None
         self.archivo_actual = ""
         self.pausado = False
@@ -54,10 +49,21 @@ class Reproductor:
             self._activo = False
             if self.actual_id is not None:
                 await asyncio.wait_for(self.audio.pause(), 12)
-            if self.audio.src != fuente:
+            if self.audio is None or self.audio.src != fuente:
                 self._listo.clear()
                 self.duracion = 0
-            self.audio.src = fuente
+            if self.audio is None:
+                self.audio = fa.Audio(
+                    src=fuente,
+                    volume=self.volumen_actual,
+                    release_mode=fa.ReleaseMode.STOP,
+                    on_state_change=self._estado,
+                    on_position_change=self._posicion,
+                    on_loaded=self._cargado,
+                    on_duration_change=self._duracion,
+                )
+            else:
+                self.audio.src = fuente
             # Enviar fuente antes de play: auto-update llega al finalizar
             # el manejador, demasiado tarde para cargar esta pista.
             self.audio.update()
@@ -68,6 +74,12 @@ class Reproductor:
             try:
                 await asyncio.wait_for(self._listo.wait(), 12)
                 await asyncio.wait_for(self.audio.play(), 12)
+            except TimeoutError as error:
+                self.actual_id = None
+                raise TimeoutError(
+                    "El reproductor no pudo cargar el audio a tiempo. "
+                    "Comprueba que el archivo sea compatible."
+                ) from error
             except Exception:
                 self.actual_id = None
                 raise
@@ -101,8 +113,10 @@ class Reproductor:
         """Fije amplitud entre 0 y 1; ValueError fuera del rango."""
         if not 0 <= valor <= 1:
             raise ValueError("El volumen debe estar entre 0 y 1.")
-        self.audio.volume = valor
-        self.audio.update()
+        self.volumen_actual = valor
+        if self.audio is not None:
+            self.audio.volume = valor
+            self.audio.update()
 
     async def buscar_posicion(self, segundos: float) -> None:
         """Salte a segundos dentro de la pista; ValueError sin selección."""
