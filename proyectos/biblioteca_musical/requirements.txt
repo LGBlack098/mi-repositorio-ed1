@@ -1,0 +1,4 @@
+# Versión estable consultada en PyPI el 13 de octubre de 2026.
+flet[all]==1.0.4
+flet-audio==1.0.4
+mutagen==1.48.1

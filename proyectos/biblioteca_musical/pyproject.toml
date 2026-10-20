@@ -1,0 +1,26 @@
+[project]
+name = "sonoteca"
+version = "1.2.0"
+description = "Reproductor local de música con playlists y cola"
+requires-python = ">=3.10"
+dependencies = ["flet==1.0.4", "flet-audio==1.0.4", "mutagen==1.48.1"]
+
+[tool.flet]
+org = "org.sonoteca"
+product = "Sonoteca"
+
+[tool.flet.app]
+path = "."
+exclude = [".venv", "build", "dist", "data", "tests", "docs", ".ruff_cache"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 79
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "D"]
+# D401 analiza gramática inglesa; los imperativos españoles se revisan a mano.
+ignore = ["D401"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"

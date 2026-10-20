@@ -1,0 +1,10 @@
+.venv
+build
+dist
+data
+__pycache__
+.ruff_cache
+tests
+assets/audio/*
+!assets/audio/demo.wav
+assets/portadas

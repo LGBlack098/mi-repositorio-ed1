@@ -1,0 +1,40 @@
+name: Pruebas de Sonoteca
+
+on:
+  push:
+    paths:
+      - "proyectos/biblioteca_musical/**"
+      - ".github/workflows/pruebas-sonoteca.yml"
+  pull_request:
+    paths:
+      - "proyectos/biblioteca_musical/**"
+      - ".github/workflows/pruebas-sonoteca.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: proyectos/biblioteca_musical
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: "proyectos/biblioteca_musical/requirements*.txt"
+      - name: Instalar dependencias
+        run: python -m pip install -r requirements-dev.txt
+      - name: Pruebas de funcionamiento
+        run: python -m unittest discover -s tests -v
+      - name: Revisar estilo
+        run: python -m ruff check .
+      - name: Revisar formato
+        run: python -m ruff format --check .
