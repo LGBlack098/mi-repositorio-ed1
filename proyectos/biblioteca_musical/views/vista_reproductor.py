@@ -16,11 +16,11 @@ from services.reproductor import Reproductor
 from views.vista_biblioteca import VistaBiblioteca
 from views.visualizador import visualizar
 
-FONDO = "#101015"
-SUPERFICIE = "#191920"
-TEXTO = "#F3F0EA"
-SUAVE = "#96939F"
-ACENTO = "#EFC689"
+FONDO = "#121212"
+SUPERFICIE = "#181818"
+TEXTO = "#F5F5F5"
+SUAVE = "#A7A7A7"
+ACENTO = "#1ED760"
 
 
 def reloj(segundos: int | float) -> str:
@@ -184,24 +184,29 @@ class VistaReproductor(VistaBiblioteca):
             ],
             wrap=True,
         )
+        self._icono_cabecera = ft.Icon(
+            ft.Icons.HEADPHONES, color=ACENTO, size=26
+        )
+        self._boton_importar = self._importador()
+        self._cabecera = ft.Row(
+            [
+                self._icono_cabecera,
+                self._filtro,
+                self._boton_importar,
+                self._menu_herramientas(),
+            ],
+            spacing=12,
+        )
         self._central.controls = [
-            ft.Row(
-                [
-                    ft.Icon(ft.Icons.HEADPHONES, color=ACENTO, size=26),
-                    self._filtro,
-                    self._importador(),
-                    self._menu_herramientas(),
-                ],
-                spacing=12,
-            ),
+            self._cabecera,
             self._tabs,
             self._mensaje,
             self._contenido,
         ]
-        volumen = ft.Slider(
+        self._volumen_control = ft.Slider(
             min=0,
             max=1,
-            value=0.5,
+            value=self._audio.audio.volume,
             width=100,
             divisions=20,
             active_color=ACENTO,
@@ -210,7 +215,7 @@ class VistaReproductor(VistaBiblioteca):
         self._volumen_panel = ft.Row(
             [
                 ft.Icon(ft.Icons.VOLUME_UP_OUTLINED, size=18, color=SUAVE),
-                volumen,
+                self._volumen_control,
             ],
             width=145,
         )
@@ -228,7 +233,7 @@ class VistaReproductor(VistaBiblioteca):
             ),
             width=235,
         )
-        controles = ft.Column(
+        self._controles_transporte = ft.Column(
             [
                 ft.Row(
                     [
@@ -254,38 +259,46 @@ class VistaReproductor(VistaBiblioteca):
             spacing=0,
             tight=True,
         )
+        self._centro_panel = ft.Container(
+            self._central, padding=24, expand=True
+        )
+        self._barra_reproduccion = ft.Container(
+            ft.Row(
+                [
+                    self._dock_info,
+                    self._controles_transporte,
+                    self._volumen_panel,
+                ],
+                spacing=22,
+            ),
+            bgcolor=SUPERFICIE,
+            padding=ft.Padding.symmetric(horizontal=22, vertical=10),
+            border=ft.Border(top=ft.BorderSide(1, "#303030")),
+        )
+        self._preparar_presentacion()
         pagina.add(
             ft.Column(
                 [
                     ft.Row(
                         [
                             self._lateral,
-                            ft.Container(
-                                self._central, padding=24, expand=True
-                            ),
+                            self._centro_panel,
                             self._panel_actual,
                         ],
                         expand=True,
                         spacing=0,
                         vertical_alignment=ft.CrossAxisAlignment.STRETCH,
                     ),
-                    ft.Container(
-                        ft.Row(
-                            [self._dock_info, controles, self._volumen_panel],
-                            spacing=22,
-                        ),
-                        bgcolor="#1C1B22",
-                        padding=ft.Padding.symmetric(
-                            horizontal=22, vertical=10
-                        ),
-                        border=ft.Border(top=ft.BorderSide(1, "#303039")),
-                    ),
+                    self._barra_reproduccion,
                 ],
                 expand=True,
                 spacing=0,
             )
         )
         self._redimensionar()
+
+    def _preparar_presentacion(self) -> None:
+        """Permita personalizar controles antes de montarlos en la página."""
 
     def _icono(self, icono, texto, operacion) -> ft.IconButton:
         """Cree control musical por icono con tooltip accesible."""
@@ -990,8 +1003,10 @@ class VistaReproductor(VistaBiblioteca):
             else ft.Icons.PLAY_ARROW_ROUNDED
         )
         self._play.tooltip = "Pausar" if reproduciendo else "Reproducir"
-        duracion = self._audio.duracion or (
-            self._seleccion.duracion_segundos if self._seleccion else 0
+        duracion = (
+            self._audio.duracion or self._seleccion.duracion_segundos
+            if self._seleccion
+            else 0
         )
         self._progreso.max = max(1, duracion)
         self._progreso.disabled = self._audio.actual_id is None

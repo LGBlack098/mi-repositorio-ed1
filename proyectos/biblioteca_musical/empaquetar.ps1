@@ -28,7 +28,7 @@ try {
         --add-data 'assets/audio/demo.wav:assets/audio' 'README.md:.' `
         --hidden-import flet_audio --product-name Sonoteca `
         --pyinstaller-build-args=--collect-data=flet_web `
-        --product-version 1.2.0 --file-version 1.2.0.0 `
+        --product-version 1.3.0 --file-version 1.3.0.0 `
         --distpath dist/windows-staging -y
     if ($LASTEXITCODE -ne 0) { throw 'Falló el empaquetado.' }
     Copy-Item -LiteralPath (Join-Path $projectRoot 'dist\windows-staging\Sonoteca') `
@@ -48,7 +48,7 @@ try {
         Get-ChildItem -LiteralPath $backup -Force |
             Copy-Item -Destination $portableData -Recurse -Force
     }
-    # Conservar fuentes legibles junto a API.md para la defensa académica.
+    # Conservar fuentes legibles para inspección y distribución portable.
     $internalRoot = Join-Path $projectRoot 'dist\Sonoteca\_internal'
     Get-ChildItem -LiteralPath $projectRoot -Filter '*.py' -File |
         Copy-Item -Destination $internalRoot -Force

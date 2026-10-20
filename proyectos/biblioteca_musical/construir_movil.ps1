@@ -50,7 +50,7 @@ try {
     $env:FLUTTER_LINUX = 'false'
     $env:FLUTTER_MACOS = 'false'
     & $projectFlet build apk $stage --yes --no-rich-output --arch arm64-v8a `
-        --product Sonoteca --build-version 1.2.0 `
+        --product Sonoteca --build-version 1.3.0 `
         --output (Join-Path $projectRoot 'dist\android')
     if ($LASTEXITCODE -ne 0) { throw 'No se pudo generar el APK. Revise el registro.' }
 } finally {

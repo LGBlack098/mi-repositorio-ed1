@@ -185,18 +185,19 @@ class TestPantallas(unittest.TestCase):
         )
         self.assertEqual(vista.seccion, "Siguientes")
 
-    def test_escritorio_y_panel_tecnico_secundario(self):
-        """Monte el reproductor y luego sus medidas y diagrama separado."""
+    def test_escritorio_y_panel_musical_lateral(self):
+        """Monte el reproductor con acceso a su cola y panel musical."""
         vista, pagina = self.montar(1366)
         self.assertIsNone(pagina.navigation_bar)
         self.assertTrue(vista._lateral.visible)
+        self.assertTrue(vista._panel_actual.visible)
         self.assertEqual(vista.seccion, "Biblioteca")
         pagina.update.reset_mock()
-        vista.seccion = "Tecnica"
+        vista.seccion = "Siguientes"
         vista.actualizar()
         pagina.update.assert_called_once()
-        self.assertIn("acciones/s", vista._medida.value)
-        self.assertTrue(vista._memoria.controls)
+        self.assertEqual(vista._barra_movil.selected_index, 2)
+        self.assertEqual(vista._boton_cola.tooltip, "Ver cola de reproducción")
 
     def test_anillo_reutiliza_marcador_y_cierra_cursor(self):
         """Siga el estado real, sin duplicar nodos ni cambiar canciones."""

@@ -11,11 +11,12 @@ cola de reproducción y una interfaz adaptable a escritorio y teléfono.
 - Mostrar la portada incrustada JPEG/PNG; usar arte local cuando falta.
 - Buscar canciones y crear playlists con apariciones independientes.
 - Reproducir, pausar, cambiar de pista, buscar posición y ajustar volumen.
+- Iniciar con volumen al 5 % y acceder a la ficha desde la canción del dock.
 - Repetición opcional y avance automático al terminar la pista real.
 - Añadir solicitudes normales, reproducir después y alternar playlists.
 - Guardar cambios automáticamente y restaurar respaldos.
-- Consultar diagramas, recorrido circular animado y métricas en un panel
-  técnico separado de la pantalla de escucha.
+- Ver por separado las solicitudes inmediatas y las canciones en cola,
+  con acceso directo desde la barra de reproducción.
 
 No requiere cuentas ni descarga música. Los archivos se copian a un
 almacenamiento propio sin modificar sus originales.
@@ -49,10 +50,13 @@ no emula Android ni sus permisos.
 2. Controla reproducción y posición desde la barra inferior.
 3. Crea una playlist y añade canciones desde el menú **…** de cada pista.
 4. En ese menú, **Información del archivo** muestra la ficha y portada.
-5. **Añadir a continuación** conserva llegada; **Reproducir después** se
+5. **Añadir a la cola** conserva llegada; **Reproducir después** se
    atiende antes de las solicitudes normales.
 6. En **Cola → Alternar playlists**, añade listas no vacías e inicia turnos.
-7. **Más opciones → Panel técnico** abre métricas y el recorrido circular.
+7. El botón **Cola** de la barra abre los próximos temas. En escritorio
+   amplio alterna el panel derecho; en teléfono abre la página de cola.
+8. **Opciones de música** reúne volumen, repetición, historial y respaldos.
+   También puedes deshacer con `Ctrl+Z` y rehacer con `Ctrl+Y`.
 
 En teléfono hay navegación inferior: Mi música, Playlists y Cola. Búsqueda,
 repetición y volumen siguen disponibles en la disposición compacta.
@@ -107,9 +111,9 @@ Límites: JSON de hasta 5 MiB, audio de hasta 50 MiB por archivo y portadas
 JPEG/PNG incrustadas de hasta 3 MiB. La compatibilidad de códecs depende del
 cliente. Los errores se comunican sin borrar la biblioteca.
 
-## Métricas
+## Instrumentación interna
 
-El panel técnico mide acciones del controlador con un reloj monotónico:
+La instrumentación mide acciones del controlador con un reloj monotónico:
 latencia, éxito/error y acciones/s observadas en una ventana de diez segundos.
 El audio, el render y el guardado posterior quedan fuera de esa medición.
 
@@ -119,6 +123,10 @@ total. Un experimento aislado compara inserción final y búsqueda ausente
 con 100, 1000 y 5000 nodos. Los tiempos son locales y no prueban por sí solos
 la complejidad asintótica.
 
+La interfaz principal muestra únicamente funciones musicales. Los módulos
+de diagramas, recorrido circular y comparación permanecen disponibles en
+el código y sus pruebas; no hay un panel académico en la aplicación.
+
 ## Pruebas y estilo
 
 ```powershell
@@ -127,10 +135,14 @@ la complejidad asintótica.
 .\.venv\Scripts\python.exe -m ruff format --check .
 ```
 
-La suite contiene 64 pruebas: enlaces, cursor, vacíos, prioridades, historial,
+La suite contiene 72 pruebas: enlaces, cursor, vacíos, prioridades, historial,
 JSON, importación, metadatos, portadas, mediciones y disposición móvil.
 El servicio de audio se simula en pruebas unitarias. No se afirma cobertura
 del 100% ni compatibilidad con todos los dispositivos.
+
+Las regresiones de interfaz comprueban la selección de una aparición entre
+canciones repetidas, el refresco sin construir dos veces la vista, la cola
+compacta, los atajos y el volumen inicial bajo.
 
 Se siguen PEP 8, anotaciones de tipo y docstrings según PEP 257. D401 se
 revisa manualmente porque su análisis gramatical inglés no se adapta a las

@@ -1,6 +1,6 @@
 [project]
 name = "sonoteca"
-version = "1.2.0"
+version = "1.3.0"
 description = "Reproductor local de música con playlists y cola"
 requires-python = ">=3.10"
 dependencies = ["flet==1.0.4", "flet-audio==1.0.4", "mutagen==1.48.1"]
